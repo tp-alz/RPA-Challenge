@@ -28,6 +28,7 @@ def main():
             # Set date, sections and sort order
             news_available = ba.apply_filters(ba.sections, start_date, end_date)
             # Extract Posts
+
             if news_available:
                 posts_data = ba.retrieve_posts(start_datetime)
             else:
@@ -35,9 +36,9 @@ def main():
         except Exception as err:
             exc_tb = sys.exc_info()[2]
             raise Exception(f'{err} ({exc_tb.tb_lineno})')
-        finally:
+        #finally:
             # Close browser
-            ba.browser_lib.close_all_browsers()
+            #ba.browser_lib.close_all_browsers()
         
         
         # Write Output Excel

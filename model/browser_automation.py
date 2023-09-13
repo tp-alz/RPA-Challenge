@@ -2,6 +2,12 @@ from dateutil.relativedelta import relativedelta
 from RPA.Robocorp.WorkItems import WorkItems
 from RPA.Desktop.Clipboard import Clipboard
 from RPA.Browser.Selenium import Selenium
+
+from robocorp import log
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+
 from datetime import date, datetime
 from RPA.Desktop import Desktop
 from model.helpers import helpers as he
@@ -27,29 +33,29 @@ class browser_automation:
         "Dic.":"12"
     }
 
-    # Cloud Deployment
-    def __init__(self, output_folder):
-        self.browser_lib = Selenium()
-        self.wi = WorkItems()
-        self.desktop_lib = Desktop()
-        self.clip = Clipboard()
-        self.wi.get_input_work_item()
-        self.search_phrase = self.wi.get_work_item_variable("search_phrase")
-        self.sections = self.wi.get_work_item_variable("sections")
-        self.months_number = self.wi.get_work_item_variable("months_number")
-        self.output_folder = output_folder
-        self.url = "https://www.nytimes.com/"
-
-    # # Local Run
+    # # Cloud Deployment
     # def __init__(self, output_folder):
     #     self.browser_lib = Selenium()
+    #     self.wi = WorkItems()
     #     self.desktop_lib = Desktop()
     #     self.clip = Clipboard()
-    #     self.search_phrase = "Argentina"
-    #     self.sections = ["Arts", "Business", "U.S."]
-    #     self.months_number = 1
+    #     self.wi.get_input_work_item()
+    #     self.search_phrase = self.wi.get_work_item_variable("search_phrase")
+    #     self.sections = self.wi.get_work_item_variable("sections")
+    #     self.months_number = self.wi.get_work_item_variable("months_number")
     #     self.output_folder = output_folder
     #     self.url = "https://www.nytimes.com/"
+
+    # Local Run
+    def __init__(self, output_folder):
+        self.browser_lib = Selenium()
+        self.desktop_lib = Desktop()
+        self.clip = Clipboard()
+        self.search_phrase = "ecuador"
+        self.sections = ["New York"]
+        self.months_number = 1
+        self.output_folder = output_folder
+        self.url = "https://www.nytimes.com/"
 
     def validate_inputs(self, search_phrase: str, sections: list, months_number: int):
         """
@@ -100,9 +106,8 @@ class browser_automation:
             end_date = date.today()
             start_date = end_date
 
-            if months_number != 0 and months_number != 1:
-                start_date = end_date - relativedelta(months=months_number-1)
-            return start_date.strftime('%m/01/%Y'), end_date.strftime('%m/%d/%Y'), start_date.replace(day=1)
+            start_date = end_date - relativedelta(months=months_number)
+            return start_date.strftime('%m/%d/%Y'), end_date.strftime('%m/%d/%Y'), start_date.replace(day=1)
         except Exception as err:
             exc_tb = sys.exc_info()[2]
             raise Exception(f'{err} ({exc_tb.tb_lineno})')
@@ -195,6 +200,12 @@ class browser_automation:
         Returns an array where each row represents one extracted post
         """
         try:
+            
+
+            get_url = self.browser_lib.get_location()
+
+            log.console_message(f'URL: {get_url}', 'INFO')
+
             # Clic on Show More if needed
             date_within_range = True
             while date_within_range:
@@ -230,11 +241,11 @@ class browser_automation:
 
                     # Download image
                     picture_filename = f'{self.output_folder}/{he.remove_special_characters(title)}.jpg'
-                    response = requests.get(picture_url)
-                    if response.status_code:
-                        fp = open(picture_filename, 'wb')
-                        fp.write(response.content)
-                        fp.close() 
+                    # response = requests.get(picture_url)
+                    # if response.status_code:
+                    #     fp = open(picture_filename, 'wb')
+                    #     fp.write(response.content)
+                    #     fp.close() 
                     
                     #   Open the url in a new window and use keystroke to download it -> Doesn't work on cloud
                     """ Does not work on cloud
