@@ -204,7 +204,7 @@ class browser_automation:
 
             get_url = self.browser_lib.get_location()
 
-            log.console_message(f'URL: {get_url}', 'INFO')
+            log.console_message(f'URL: {get_url}  end', 'INFO')
 
             # Clic on Show More if needed
             date_within_range = True
